@@ -17,7 +17,7 @@ function Webhook:Send(Data, Yields)
     end;
 
     local function send()
-        syn.request({
+        request({
             Url = self._Url,
             Method = 'POST',
             Headers = {['Content-Type'] = 'application/json'},
