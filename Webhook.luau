@@ -20,7 +20,7 @@ local Webhook = { }; do
         self._Url = Url
 
         return self;
-    end;
+    end
 
     function Webhook:Send(Data, Yields)
         if (typeof(Data) == 'string') then
@@ -34,14 +34,14 @@ local Webhook = { }; do
                 Headers = {['Content-Type'] = 'application/json'},
                 Body = HttpService:JSONEncode(HttpService, Data)
             });
-        end;
+        end
 
         if (Yields) then
             pcall(Send);
         else
             task.spawn(Send);
-        end;
-    end;
+        end
+    end
 end
 
 return Webhook;
