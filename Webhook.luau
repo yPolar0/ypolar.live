@@ -1,11 +1,22 @@
-local HttpService = cloneref("HttpService");
+local Get = setmetatable({ }, { __index = function(Self, Index)
+    return cloneref(game.GetService(game, Index));
+end })
 
-local Webhook = {};
+local HttpService = Get.HttpService;
+
+local Webhook = { };
 Webhook.__index = Webhook;
 
-function Webhook.new(Url)
-    local self = setmetatable({}, Webhook);
+function Webhook.IsValidUrl(Url)
+    assert(typeof(Url) == "string", "Webhook URL must be a string")
 
+    return Url:find("https://discord.com/api/webhooks/", 1, true) or Url:find("https://discordapp.com/api/webhooks/", 1, true) or Url:find("https://webhook.lewisakura.moe/api/webhooks/", 1, true);
+end
+
+function Webhook.new(Url)
+    assert(Webhook.IsValidUrl(Url), "Invalid Discord webhook URL")
+
+    local self = setmetatable({ }, Webhook);
     self._Url = Url;
 
     return self;
@@ -13,10 +24,10 @@ end;
 
 function Webhook:Send(Data, Yields)
     if (typeof(Data) == 'string') then
-        data = {content = Data};
-    end;
+        Data = { content = Data };
+    end
 
-    local function send()
+    local Send = function()
         request({
             Url = self._Url,
             Method = 'POST',
@@ -26,9 +37,9 @@ function Webhook:Send(Data, Yields)
     end;
 
     if (Yields) then
-        pcall(send);
+        pcall(Send);
     else
-        task.spawn(send);
+        task.spawn(Send);
     end;
 end;
 
